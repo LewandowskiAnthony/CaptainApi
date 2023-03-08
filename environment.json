@@ -6,27 +6,16 @@
     "clientId": "",
     "client_secret": "",
     "oAuth2Url": "",
-    "comment" : ""
+    "comment": ""
   },
-  "available_shipment": {
-    "url": "",
-    "x-api-key": "",
-    "x-env": "",
-    "test_value": 0,
-    "api_name" : ""
-  },
-  "shu_sscc": {
-    "url": "",
-    "x-api-key": "",
-    "x-env": "",
-    "test_value": 0,
-    "api_name" : ""
-  },
-  "order_delivery_partner": {
-    "url": "",
-    "x-api-key": "",
-    "x-env": "",
-    "test_value": 0,
-    "api_name" : ""
-  }
+  "apis": [
+    {
+      "url": "",
+      "test_endpoint": "",
+      "x-api-key": "",
+      "x-env": "",
+      "test_value": 0,
+      "api_name": ""
+    }
+  ]
 }

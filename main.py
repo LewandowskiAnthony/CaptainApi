@@ -8,12 +8,26 @@ import requests as requests
 
 environment_json = open(sys.argv[1])
 
+class Api:
+    def __init__(self, url, key, env, test_data, name):
+        self.url = url
+        self.key = key
+        self.env = env
+        self.test_data = test_data
+        self.name = name
+
+
+# Object containing API urls
+class ApiUrls:
+    def __init__(self, url, test_endpoint):
+        self.url = url
+        self.test_endpoint = test_endpoint
+
+
 data = json.load(environment_json)
 auth_information = data['authentication']
 running_information = data['running_variable']
-available_shipment_information = data['available_shipment']
-shu_sscc_information = data['shu_sscc']
-order_delivery_partner_information = data['order_delivery_partner']
+api_information = data['apis']
 
 debug_mode = running_information['debug_mode']
 
@@ -26,34 +40,12 @@ auth_data = {
     'client_secret': clientSecret,
 }
 
-# Available-shipment
-as_url = available_shipment_information["url"]
-as_api_key = available_shipment_information["x-api-key"]
-as_x_env = available_shipment_information["x-env"]
-as_po_to_test = available_shipment_information["test_value"]
-as_api_name = available_shipment_information["api_name"]
-
-# SHU API information
-shu_url = shu_sscc_information["url"]
-shu_api_key = shu_sscc_information["x-api-key"]
-shu_x_env = shu_sscc_information["x-env"]
-shu_id_to_test = shu_sscc_information["test_value"]
-shu_api_name = shu_sscc_information["api_name"]
-
-# Partner API information
-partner_url = order_delivery_partner_information["url"]
-partner_api_key = order_delivery_partner_information["x-api-key"]
-partner_x_env = order_delivery_partner_information["x-env"]
-partner_purchase_order_to_test = order_delivery_partner_information["test_value"]
-partner_api_name = order_delivery_partner_information["api_name"]
-
-
-# Object containing API urls
-class ApiUrls:
-    def __init__(self, url, test_endpoint):
-        self.url = url
-        self.test_endpoint = test_endpoint
-
+apiList = []
+for current_api_info in api_information:
+    apiList.append(Api(ApiUrls(current_api_info["url"],
+                               f'{current_api_info["url"]}{current_api_info["test_endpoint"]}{current_api_info["test_value"]}'),
+                       current_api_info["x-api-key"], current_api_info["x-env"],
+                       current_api_info["test_value"], current_api_info["api_name"], ))
 
 # Is used to concert a string with a LocalDateTime to a python datetime format
 def convert_utc_string_date_to_datetime(date_to_convert):
@@ -79,7 +71,7 @@ def api_response_test(api_call_response, field, api_name):
             field in api_call_response.json() or field in api_call_response.json()[0]):
         print(f'{Fore.GREEN} {api_name} API Responded correctly {Style.RESET_ALL}')
     else:
-        print(f'{Fore.RED} Error in  {as_api_name} API Call, please, check your deployment {Style.RESET_ALL}')
+        print(f'{Fore.RED} Error in  {api_name} API Call, please, check your deployment {Style.RESET_ALL}')
 
 
 # Will test the actuator/info endpoint of the API and will make a call to retrieve information
@@ -131,20 +123,10 @@ def test_api_and_return_entity(url, api_key, x_env, api_name, token, version="v1
 def main():
     access_token = return_access_token(oAuth2Url, auth_data)
 
-    # AS Legacy validation
-    as_urls = ApiUrls(as_url, f'{as_url}/api/v1/available_shipments/{as_po_to_test}')
-    response = test_api_and_return_entity(as_urls, as_api_key, as_x_env, as_api_name, access_token)
-    api_response_test(response, 'purchase_order_number', as_api_name)
-
-    # SHU validation
-    shu_urls = ApiUrls(shu_url, f'{shu_url}/api/v1/shu_ssccs/{shu_id_to_test}')
-    response = test_api_and_return_entity(shu_urls, shu_api_key, shu_x_env, shu_api_name, access_token)
-    api_response_test(response, 'id', shu_api_name)
-
-    # Partner validation
-    partner_urls = ApiUrls(partner_url, f'{partner_url}/api/v1/available_shipments/{partner_purchase_order_to_test}')
-    response = test_api_and_return_entity(partner_urls, partner_api_key, partner_x_env, partner_api_name, access_token)
-    api_response_test(response, 'purchase_order_number', partner_api_name)
+    for current_api in apiList:
+        response = test_api_and_return_entity(current_api.url, current_api.key, current_api.env, current_api.name,
+                                              access_token)
+        api_response_test(response, 'purchase_order_number', current_api.name)
 
 
 if __name__ == "__main__":
