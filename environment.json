@@ -15,7 +15,8 @@
       "x-api-key": "",
       "x-env": "",
       "test_value": 0,
-      "api_name": ""
+      "api_name": "",
+      "field_to_check": ""
     }
   ]
 }

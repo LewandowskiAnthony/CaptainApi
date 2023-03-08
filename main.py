@@ -9,12 +9,13 @@ import requests as requests
 environment_json = open(sys.argv[1])
 
 class Api:
-    def __init__(self, url, key, env, test_data, name):
+    def __init__(self, url, key, env, test_data, name, field_to_check):
         self.url = url
         self.key = key
         self.env = env
         self.test_data = test_data
         self.name = name
+        self.field_to_check = field_to_check
 
 
 # Object containing API urls
@@ -45,7 +46,7 @@ for current_api_info in api_information:
     apiList.append(Api(ApiUrls(current_api_info["url"],
                                f'{current_api_info["url"]}{current_api_info["test_endpoint"]}{current_api_info["test_value"]}'),
                        current_api_info["x-api-key"], current_api_info["x-env"],
-                       current_api_info["test_value"], current_api_info["api_name"], ))
+                       current_api_info["test_value"], current_api_info["api_name"], current_api_info["field_to_check"]))
 
 # Is used to concert a string with a LocalDateTime to a python datetime format
 def convert_utc_string_date_to_datetime(date_to_convert):
@@ -126,7 +127,7 @@ def main():
     for current_api in apiList:
         response = test_api_and_return_entity(current_api.url, current_api.key, current_api.env, current_api.name,
                                               access_token)
-        api_response_test(response, 'purchase_order_number', current_api.name)
+        api_response_test(response, current_api.field_to_check, current_api.name)
 
 
 if __name__ == "__main__":
