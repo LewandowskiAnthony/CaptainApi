@@ -35,7 +35,8 @@ Admitting this is the endpoint to test you'll have to fill the environment.json 
       "x-api-key": "YOUR_API_KEY",
       "x-env": "YOU X-ENV",
       "test_value": 1000,
-      "api_name": "My Super Api"
+      "api_name": "My Super Api",
+      "field_to_check": "a field of your DTO to check it returns the right entity"
     }
 ]
 ```
