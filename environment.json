@@ -11,12 +11,18 @@
   "apis": [
     {
       "url": "",
-      "test_endpoint": "",
       "x-api-key": "",
       "x-env": "",
-      "test_value": 0,
-      "api_name": "",
-      "field_to_check": ""
+      "tests" : [
+        {
+          "test_name" : "",
+          "test_endpoint": "",
+          "test_value" : 0,
+          "http_method" : "",
+          "field_to_check": ""
+        }
+      ],
+      "api_name": ""
     }
   ]
 }
