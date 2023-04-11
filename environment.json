@@ -2,27 +2,37 @@
   "running_variable": {
     "debug_mode": false
   },
-  "authentication": {
-    "clientId": "",
-    "client_secret": "",
-    "oAuth2Url": "",
-    "comment": ""
-  },
+  "authentication": {},
   "apis": [
     {
-      "url": "",
+      "url": "https://api.isevenapi.xyz/",
       "x-api-key": "",
       "x-env": "",
-      "tests" : [
+      "tests": [
         {
-          "test_name" : "",
-          "test_endpoint": "",
-          "test_value" : 0,
-          "http_method" : "",
-          "field_to_check": ""
+          "test_name" : "Check is empty",
+          "test_endpoint": "api/iseven",
+          "test_value" : 16,
+          "http_method" : "GET",
+          "field_to_check": "iseven"
         }
       ],
-      "api_name": ""
+      "api_name": "Public API entries"
+    },
+    {
+      "url": "http://localhost:8080",
+      "x-api-key": "",
+      "x-env": "",
+      "tests": [
+        {
+          "test_name" : "Retrieve a user",
+          "test_endpoint": "api/v1/users",
+          "test_value" : 1,
+          "http_method" : "GET",
+          "field_to_check": "id"
+        }
+      ],
+      "api_name": "localAPItester"
     }
   ]
 }
